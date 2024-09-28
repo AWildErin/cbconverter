@@ -1,0 +1,6 @@
+[submodule "thirdparty/cbreader"]
+	path = thirdparty/cbreader
+	url = https://github.com/AWildErin/CBReader.git
+[submodule "thirdparty/argparse"]
+	path = thirdparty/argparse
+	url = https://github.com/p-ranav/argparse

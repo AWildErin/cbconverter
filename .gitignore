@@ -1,0 +1,18 @@
+# IDEs
+.idea/
+.vs/
+.vscode/
+CMakeSettings.json
+
+# Project exclude paths
+cmake-build-*/
+out
+build/
+
+# Generated
+test/config.h
+.github/docs/generated
+
+# Python
+__pycache__/
+.venv
