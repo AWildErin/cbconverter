@@ -4,3 +4,9 @@
 [submodule "thirdparty/argparse"]
 	path = thirdparty/argparse
 	url = https://github.com/p-ranav/argparse
+[submodule "thirdparty/assimp"]
+	path = thirdparty/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "thirdparty/spdlog"]
+	path = thirdparty/spdlog
+	url = https://github.com/gabime/spdlog.git
