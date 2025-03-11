@@ -1,0 +1,135 @@
+# Derived from https://github.com/craftablescience/sourcepp/blob/0952cbbe68cc7e66a2294b9deb18017ab45479c9/.github/workflows/build.yml
+# and https://github.com/craftablescience/VPKEdit/blob/690a17ab38ab6e7f70d671c57ef855881fb77031/.github/workflows/build.yml
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    # nothing here
+
+env:
+  BUILD_DIR: '${{env.BUILD_DIR}}'
+
+jobs:
+  build-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+        compiler: [gcc]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Necessary Packages
+        run: sudo apt update && sudo apt install -y cmake build-essential
+
+      - name: Install GCC
+        if: ${{matrix.compiler == 'gcc'}}
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+
+      - name: Configure CMake
+        run: cmake -G "Unix Makefiles" -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DBUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build ${{env.BUILD_DIR}} --config ${{matrix.build_type}}
+
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{matrix.target}}-Linux-${{matrix.compiler}}-${{matrix.build_type}}'
+          path: |
+            ${{env.BUILD_DIR}}/cbconverter
+          retention-days: 7
+
+      #- name: Test
+      #  working-directory: ${{env.BUILD_DIR}}
+      #  run: ctest
+
+  build-windows:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        compiler: [msvc]
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          spectre: true
+
+      - name: Configure CMake
+        run: cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DBUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build ${{env.BUILD_DIR}} --config ${{matrix.build_type}}
+
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{matrix.target}}-Windows-${{matrix.compiler}}-${{matrix.build_type}}'
+          path: |
+            ${{env.BUILD_DIR}}/cbconverter.exe
+          retention-days: 7
+
+      #- name: Test
+      #  working-directory: ${{env.BUILD_DIR}}
+      #  run: ctest
+
+  deploy:
+    needs:
+      - build-windows
+      - build-linux
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download Artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = (await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{github.run_id}},
+            })).data.artifacts;
+            const filteredArtifacts = artifacts.filter(artifact => artifact.name.includes("Release"));
+            console.log(`Found ${artifacts.length} artifacts - ${filteredArtifacts.length} qualify for upload.`);
+            for (const artifact of filteredArtifacts) {
+              console.log(`Downloading "${artifact.name}.zip"...`);
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              let fs = require('fs');
+              fs.writeFileSync(`${{github.workspace}}/${artifact.name}.zip`, Buffer.from(download.data));
+            }
+            console.log("Artifact download complete!");
+
+      - name: Upload Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release-Artifacts
+          path: |
+            ${{github.workspace}}/*.zip
+          retention-days: 7
