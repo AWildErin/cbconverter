@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/cbreader")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/argparse")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/spdlog")
 
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF)
@@ -31,4 +32,5 @@ target_link_libraries(
     CBReader
     argparse::argparse
     assimp
+	spdlog
 )
