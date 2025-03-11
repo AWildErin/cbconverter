@@ -18,7 +18,17 @@ set(ASSIMP_BUILD_FBX_IMPORTER ON)
 set(ASSIMP_BUILD_GLTF_EXPORTER OFF) # @todo Would like this in the future, but I get compile errors
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/assimp")
 
+
 set(${PROJECT_NAME}_SRC
+	${CMAKE_CURRENT_LIST_DIR}/include/cbconverter/exporter.h
+	${CMAKE_CURRENT_LIST_DIR}/src/exporter.cpp
+
+	${CMAKE_CURRENT_LIST_DIR}/include/cbconverter/export_rmesh.h
+	${CMAKE_CURRENT_LIST_DIR}/src/export_rmesh.cpp
+
+	${CMAKE_CURRENT_LIST_DIR}/include/cbconverter/utils.h
+	${CMAKE_CURRENT_LIST_DIR}/src/utils.cpp
+
 	${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
 )
 
