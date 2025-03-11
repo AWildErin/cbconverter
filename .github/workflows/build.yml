@@ -47,7 +47,7 @@ jobs:
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
-          name: '${{matrix.target}}-Linux-${{matrix.compiler}}-${{matrix.build_type}}'
+          name: 'Linux-${{matrix.compiler}}-${{matrix.build_type}}'
           path: |
             ${{env.BUILD_DIR}}/cbconverter
           retention-days: 7
@@ -86,7 +86,7 @@ jobs:
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
-          name: '${{matrix.target}}-Windows-${{matrix.compiler}}-${{matrix.build_type}}'
+          name: 'Windows-${{matrix.compiler}}-${{matrix.build_type}}'
           path: |
             ${{env.BUILD_DIR}}/cbconverter.exe
           retention-days: 7
