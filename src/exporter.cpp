@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <assimp/exporter.hpp>
+#include <assimp/Exporter.hpp>
 
 IExporter::IExporter(ExportFileType inExportType)
 	: exportType(inExportType)
@@ -31,6 +31,6 @@ bool IExporter::Export(const std::string& outPath)
 	}
 
 	Assimp::Exporter exporter;
-	return exporter.Export(exporterScene, "fbx", outPath, aiProcess_FlipUVs, nullptr);
+	return exporter.Export(exporterScene, outType, outPath, aiProcess_FlipUVs, nullptr);
 }
 
