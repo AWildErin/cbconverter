@@ -50,6 +50,7 @@ jobs:
           name: 'Linux-${{matrix.compiler}}-${{matrix.build_type}}'
           path: |
             ${{env.BUILD_DIR}}/cbconverter
+            ${{github.workspace}}/third_party_licenses.txt
           retention-days: 7
 
       #- name: Test
@@ -89,6 +90,7 @@ jobs:
           name: 'Windows-${{matrix.compiler}}-${{matrix.build_type}}'
           path: |
             ${{env.BUILD_DIR}}/cbconverter.exe
+            ${{github.workspace}}/third_party_licenses.txt
           retention-days: 7
 
       #- name: Test
