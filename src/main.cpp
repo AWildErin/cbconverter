@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			spdlog::error("Exported {} to {}", path, outputPath);
+			spdlog::info("Exported {} to {}", path, outputPath);
 		}
 	}
 	catch (const std::exception& e)
