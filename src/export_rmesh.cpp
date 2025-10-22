@@ -120,8 +120,12 @@ void ExportRMesh::AddSurface(rmesh::Surface& surface, std::string meshName, int 
 	mesh->mVertices = new aiVector3D[mesh->mNumVertices];
 	mesh->mNormals = new aiVector3D[mesh->mNumVertices];
 
+	// Set 0 is texture uvs
+	// Set 1 is lightmap uvs
 	mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
+	mesh->mTextureCoords[1] = new aiVector3D[mesh->mNumVertices];
 	mesh->mNumUVComponents[0] = 2;
+	mesh->mNumUVComponents[1] = 2;
 
 	for (int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -134,6 +138,7 @@ void ExportRMesh::AddSurface(rmesh::Surface& surface, std::string meshName, int 
 		mesh->mVertices[i] = CbConverterUtils::ToVector3D(vertex);
 
 		mesh->mTextureCoords[0][i] = CbConverterUtils::ToVector3D(vert.uv);
+		mesh->mTextureCoords[1][i] = CbConverterUtils::ToVector3D(vert.lightmapUV);
 	}
 
 	// Add Faces
